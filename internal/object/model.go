@@ -4,7 +4,7 @@ import "fmt"
 
 type ObjectType string
 type Mode string
-
+type GitFileType string
 
 const (
 	Blob ObjectType = "blob"
@@ -16,6 +16,13 @@ const (
 	DirMode        Mode = "40000"
 	ExecutableMode Mode = "100755"
 	SymlinkMode    Mode = "120000"
+)
+
+const (
+	Root    GitFileType = ".git"
+	Objects GitFileType = Root + "/objects"
+	Refs    GitFileType = Root + "/refs"
+	Head    GitFileType = Root + "/HEAD"
 )
 
 type ObjectHeader struct {
@@ -35,7 +42,7 @@ type TreeObject struct {
 }
 
 type BlobObject struct {
-	Header ObjectHeader
+	Header  ObjectHeader
 	Content string
 }
 
