@@ -6,10 +6,11 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"io"
 	"strings"
 
 	"os"
+
+	"github.com/codecrafters-io/git-starter-go/internal/object"
 )
 
 // Usage: your_git.sh <command> <arg1> <arg2> ...
@@ -40,29 +41,10 @@ func main() {
 			fmt.Fprintf(os.Stderr, "usage: mygit cat-file -p <sha>\n")
 		}
 		filesha := os.Args[3]
+		fileContent := object.GetFileData(filesha)
 		// fmt.Println("Reading file", filesha)
-		fileContent, err := os.ReadFile(fmt.Sprintf(".git/objects/%s/%s", filesha[:2], filesha[2:]))
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error reading file: %s\n", err.Error())
-			os.Exit(1)
-		}
-		bytesReader := bytes.NewReader(fileContent)
-		bytesWriter := &bytes.Buffer{}
-		reader, err := zlib.NewReader(bytesReader)
-		defer reader.Close()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Something went wrong: %s\n", err.Error())
-			os.Exit(1)
-		}
-		_, err = io.Copy(bytesWriter, reader)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error reading file: %s\n", err.Error())
-			os.Exit(1)
-		}
-		// 
-		// fmt.Println(bytesWriter.String())
-		_ = strings.Split(bytesWriter.String(), "")[0]
-		content := strings.Split(bytesWriter.String(), "\x00")[1]
+		
+		content := strings.Split(string(fileContent), "\x00")[1]
 		fmt.Print(content)
 	
 	case "hash-object":
@@ -97,6 +79,31 @@ func main() {
 			}
 		}
 		fmt.Print(hashedValue)
+	case "ls-tree":
+		if len(os.Args) < 3 {
+			fmt.Fprintf(os.Stderr, "usage: mygit ls-tree <sha>\n")
+		}
+		flag := ""
+		if len(os.Args) > 3 {
+			flag = os.Args[2]
+		}
+		filesha := os.Args[3]
+		fileContent := object.GetFileData(filesha)
+		treeObject := object.GetTreeObject(fileContent)
+		// fileContent := getFileContent(filesha)
+		switch flag {
+			case "--name-only":
+				fileNames := ""
+				for _, obj := range treeObject.Entries {
+					if len(obj.Name) > 0 {
+						fileNames = fmt.Sprintf("%s%s\n", fileNames, obj.Name)
+					}
+				}
+				fmt.Print(fileNames)
+				
+			default:
+				fmt.Print(string(fileContent))
+		}
 
 	default:
 		fmt.Fprintf(os.Stderr, "Unknown command %s\n", command)
