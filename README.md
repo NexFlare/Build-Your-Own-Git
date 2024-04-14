@@ -1,4 +1,4 @@
-# Mini Git in Go
+# Build Your Own Git
 
 This project is a simplified version of Git, written in Go. It explores the internal mechanics of Git by implementing core functionalities from scratch. This mini-Git is designed for educational purposes to provide insight into how Git manages and stores data, along with the basic functionalities that make Git a powerful tool for version control.
 
