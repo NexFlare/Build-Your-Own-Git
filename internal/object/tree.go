@@ -10,10 +10,6 @@ import (
 	"github.com/codecrafters-io/git-starter-go/internal/util"
 )
 
-func CreateTree() string {
-	return hex.EncodeToString(createTree("."))
-}
-
 func GetTreeObject(data []byte) TreeObject {
 	treeObject := TreeObject{}
 	treeObject.Header = GetHeader(data)
@@ -55,7 +51,7 @@ func GetTreeObject(data []byte) TreeObject {
 	return treeObject
 }
 
-func createTree(path string) []byte {
+func CreateTree(path string) []byte {
 	files, err := os.ReadDir(path)
 	entryList := []TreeEntry{}
 	if err == nil {
@@ -76,7 +72,7 @@ func createTree(path string) []byte {
 				if file.Name() == ".git" {
 					continue
 				}
-				hashedValue := createTree(fmt.Sprintf("%s/%s", path, file.Name()))
+				hashedValue := CreateTree(fmt.Sprintf("%s/%s", path, file.Name()))
 				entryList = append(entryList, TreeEntry{
 					Mode: DirMode,
 					Name: file.Name(),

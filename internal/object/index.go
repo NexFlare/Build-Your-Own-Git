@@ -11,27 +11,6 @@ import (
 	"github.com/codecrafters-io/git-starter-go/internal/util"
 )
 
-func GetHashObject() string {
-	if len(os.Args) < 3 {
-		fmt.Fprintf(os.Stderr, "usage: mygit hash-object <file>\n")
-		os.Exit(1)
-	}
-	writeToObj := false
-	fileName := os.Args[2]
-	if len(os.Args) > 3 && os.Args[2] == "-w" {
-		writeToObj = true
-		fileName = os.Args[3]
-	}
-	fileContent, err := os.ReadFile(fileName)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading file: %s\n", err.Error())
-		os.Exit(1)
-	}
-
-	hashedValue := CreateBlog(fileContent, writeToObj)
-	return hex.EncodeToString(hashedValue)
-}
-
 func GetFileData(filesha string) []byte {
 	fileContent, err := os.ReadFile(fmt.Sprintf(".git/objects/%s/%s", filesha[:2], filesha[2:]))
 	if err != nil {
