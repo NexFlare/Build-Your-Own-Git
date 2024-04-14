@@ -11,6 +11,10 @@ This project is a simplified version of Git, written in Go. It explores the inte
 - **write-tree**: Create a tree object from the staging area.
 - **commit-tree**: Create a commit object from a tree object.
 
+## Notes
+
+<img src="./git.jpeg"  height="512" alt="Hand written notes">
+
 ## Installation
 
 ```bash
